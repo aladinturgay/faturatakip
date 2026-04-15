@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
+  <div class="card p-4 shadow-sm" style="min-width:340px; max-width:380px; width:100%; border-radius:14px;">
+    <h2 class="mb-4 text-center" style="color:#2563eb;">Giriş Yap</h2>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="mb-3">
+        <%= f.label :email, 'E-posta', class: 'form-label' %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control' %>
+      </div>
+      <div class="mb-3">
+        <%= f.label :password, 'Şifre', class: 'form-label' %>
+        <%= f.password_field :password, autocomplete: "current-password", class: 'form-control' %>
+      </div>
+      <% if devise_mapping.rememberable? -%>
+        <div class="mb-3 form-check">
+          <%= f.check_box :remember_me, class: 'form-check-input' %>
+          <%= f.label :remember_me, 'Beni Hatırla', class: 'form-check-label' %>
+        </div>
+      <% end -%>
+      <div class="d-grid gap-2 mb-2">
+        <%= f.submit "Giriş Yap", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+    <div class="text-center mt-2">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

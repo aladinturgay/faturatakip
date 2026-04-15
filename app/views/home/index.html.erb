@@ -1,0 +1,143 @@
+    <% if user_signed_in? && current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).any? %>
+      <div class="card shadow-sm border-0 p-3 mb-4 mx-auto" style="background:#fff0f0; color:#b91c1c; border-radius:12px; min-width:320px; max-width:420px;">
+        <div class="fw-bold mb-2" style="font-size:16px;">Yaklaşan Faturalar</div>
+        <% current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).order(:due_at).each do |inv| %>
+          <div class="mb-1 small">
+            <b><%= inv.subscription&.name %></b> - <%= inv.amount %>₺ - Son Ödeme: <b><%= inv.due_at %></b>
+            <%= link_to 'Detay', invoice_path(inv), class: 'btn btn-xs btn-outline-danger ms-2' %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+<div class="d-flex" style="min-height: 100vh;">
+  <nav class="bg-dark text-white p-4" style="width: 220px; min-height: 100vh;">
+    <div class="mb-4 text-center">
+      <i class="fas fa-network-wired fa-2x mb-2"></i>
+      <h4 style="font-weight:bold;">Takip Paneli</h4>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2"><%= link_to raw('<i class="fas fa-layer-group"></i> Abonelikler'), subscriptions_path, class: 'nav-link text-white' %></li>
+      <li class="nav-item mb-2"><%= link_to raw('<i class="fas fa-file-invoice"></i> Faturalar'), invoices_path, class: 'nav-link text-white' %></li>
+      <% if user_signed_in? %>
+        <li class="nav-item mt-4"><%= link_to raw('<i class="fas fa-sign-out-alt"></i> Çıkış Yap'), destroy_user_session_path, method: :delete, class: 'nav-link text-danger' %></li>
+      <% else %>
+        <li class="nav-item mt-4"><%= link_to raw('<i class="fas fa-sign-in-alt"></i> Giriş Yap'), new_user_session_path, class: 'nav-link text-success' %></li>
+        <li class="nav-item"><%= link_to raw('<i class="fas fa-user-plus"></i> Kayıt Ol'), new_user_registration_path, class: 'nav-link text-success' %></li>
+      <% end %>
+    </ul>
+  </nav>
+  <main class="flex-grow-1 p-4">
+    <h1 class="mb-4 text-center" style="color:#1976d2;">Kurumsal Takip Sistemi</h1>
+    <% if user_signed_in? %>
+      <div class="d-flex justify-content-center mb-4" style="gap: 18px;">
+        <%= link_to subscriptions_path, style: 'text-decoration:none;' do %>
+          <div class="card shadow-sm border-0 text-center" style="background:#2563eb; color:#fff; border-radius:10px; width:110px; cursor:pointer;">
+            <div class="card-body p-2">
+              <i class="fas fa-layer-group fa-lg mb-1"></i>
+              <h5 class="fw-bold mb-0"><%= current_user.subscriptions.count %></h5>
+              <div style="font-size:13px;">Abonelik</div>
+            </div>
+          </div>
+        <% end %>
+        <%= link_to invoices_path, style: 'text-decoration:none;' do %>
+          <div class="card shadow-sm border-0 text-center" style="background:#f59e42; color:#fff; border-radius:10px; width:110px; cursor:pointer;">
+            <div class="card-body p-2">
+              <i class="fas fa-file-invoice fa-lg mb-1"></i>
+              <h5 class="fw-bold mb-0"><%= current_user.invoices.count %></h5>
+              <div style="font-size:13px;">Fatura</div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+        <div class="fw-bold mb-3 text-center" style="font-size:18px;">Hoş geldin, <%= current_user.email %>!</div>
+        <div class="d-flex justify-content-center mb-5" style="gap: 56px;">
+          <div class="card shadow-sm border-0 p-4 d-flex flex-column align-items-center" style="border-radius:14px; width:420px; min-width:260px;">
+            <h6 class="text-center mb-3">Faturalar (Yatay Grafik)</h6>
+            <canvas id="invoicesBarH" width="360" height="220"></canvas>
+          </div>
+          <div class="card shadow-sm border-0 p-4 d-flex flex-column align-items-center" style="border-radius:14px; width:420px; min-width:260px;">
+            <h6 class="text-center mb-3">Abonelikler (Pasta Grafik)</h6>
+            <canvas id="subsPie" width="220" height="220"></canvas>
+          </div>
+        </div>
+    <% else %>
+      <div class="alert alert-info text-center">Lütfen giriş yapınız. Kişisel abonelik ve fatura bilgilerinizi görmek için üye girişi gereklidir.</div>
+    <% end %>
+    <!-- Fatura Durumları (Bar) ve (Pasta) kaldırıldı -->
+    <% if user_signed_in? %>
+      <p class="mt-4 text-center">Hoş geldin, <%= current_user.email %>!</p>
+    <% else %>
+      <div class="mt-4 text-center">
+        <%= link_to 'Giriş Yap', new_user_session_path, class: 'btn btn-primary me-2' %>
+        <%= link_to 'Kayıt Ol', new_user_registration_path, class: 'btn btn-success' %>
+      </div>
+    <% end %>
+    <% if user_signed_in? %>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Fatura verileri
+        const paidCount = <%= current_user.invoices.where(status: 'paid').count %>;
+        const unpaidCount = <%= current_user.invoices.where(status: 'unpaid').count %>;
+
+        // Yatay Bar Chart (Faturalar)
+        const barHCanvas = document.getElementById('invoicesBarH');
+        if (barHCanvas) {
+          const ctxBarH = barHCanvas.getContext('2d');
+          new Chart(ctxBarH, {
+            type: 'bar',
+            data: {
+              labels: ['Ödendi', 'Ödenmedi'],
+              datasets: [{
+                label: 'Fatura Sayısı',
+                data: [paidCount, unpaidCount],
+                backgroundColor: [
+                  'rgba(34,197,94,0.8)',
+                  'rgba(239,68,68,0.8)'
+                ],
+                borderRadius: 8
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { precision:0 } }
+              }
+            }
+          });
+        }
+
+        // Abonelik verileri
+        const activeCount = <%= current_user.subscriptions.where(status: 'active').count %>;
+        const inactiveCount = <%= current_user.subscriptions.where(status: 'inactive').count %>;
+
+        // Pie Chart (Abonelikler)
+        const subsPieCanvas = document.getElementById('subsPie');
+        if (subsPieCanvas) {
+          const ctxSubsPie = subsPieCanvas.getContext('2d');
+          new Chart(ctxSubsPie, {
+            type: 'doughnut',
+            data: {
+              labels: ['Aktif', 'Pasif'],
+              datasets: [{
+                data: [activeCount, inactiveCount],
+                backgroundColor: [
+                  'rgba(34,197,94,0.8)',
+                  'rgba(100,116,139,0.8)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              cutout: '70%',
+              plugins: {
+                legend: { position: 'bottom' }
+              }
+            }
+          });
+        }
+      });
+    </script>
+    <% end %>
+  </main>
+</div>

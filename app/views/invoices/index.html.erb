@@ -1,0 +1,59 @@
+<% upcoming = @invoices.select { |inv| inv.status == 'unpaid' && inv.due_at && inv.due_at >= Date.today && inv.due_at <= Date.today + 7.days } %>
+<% if upcoming.any? %>
+  <div class="card shadow-sm border-0 p-3 mb-4 mx-auto" style="background:#fff0f0; color:#b91c1c; border-radius:12px; max-width:420px;">
+    <div class="fw-bold mb-2" style="font-size:16px;">Yaklaşan Faturalar</div>
+    <% upcoming.each do |inv| %>
+      <div class="mb-1 small">
+        <b><%= inv.subscription&.name %></b> - <%= inv.amount %>₺ - Son Ödeme: <b><%= inv.due_at %></b>
+        <%= link_to 'Detay', invoice_path(inv), class: 'btn btn-xs btn-outline-danger ms-2' %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<h2 class="mb-3 text-center" style="color:#f59e42;">Faturalar</h2>
+<div class="card p-3 mb-4 table-responsive" style="max-width:1100px; margin:auto;">
+  <% if @invoices.present? %>
+    <table class="table table-striped table-bordered align-middle mb-0" style="background:#fff; border-radius:8px; overflow:hidden; min-width:700px;">
+      <thead class="table-light">
+        <tr>
+          <th>Abonelik</th>
+          <th>Tutar</th>
+          <th>Durum</th>
+          <th>Düzenlenme</th>
+          <th>Son Ödeme</th>
+          <th>Detay</th>
+          <th>Sil</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @invoices.each do |inv| %>
+          <tr>
+            <td><%= inv.subscription&.name %></td>
+            <td><%= inv.amount %> TL</td>
+            <td>
+              <% if inv.status == 'paid' %>
+                <span class="badge bg-success">Ödendi</span>
+              <% elsif inv.status == 'unpaid' %>
+                <span class="badge bg-danger">Ödenmedi</span>
+              <% else %>
+                <span class="badge bg-secondary">Bilinmiyor</span>
+              <% end %>
+            </td>
+            <td><%= inv.issued_at %></td>
+            <td><%= inv.due_at %></td>
+            <td><%= link_to raw('<i class="fas fa-eye"></i> Detay'), invoice_path(inv), class: 'btn btn-sm btn-outline-primary' %></td>
+            <td>
+              <%= button_to 'Sil', invoice_path(inv), method: :delete, data: { confirm: 'Faturayı silmek istediğinize emin misiniz?' }, class: 'btn btn-sm btn-outline-danger' %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="text-center p-4 text-muted">Kayıtlı fatura bulunamadı.</div>
+  <% end %>
+  <div class="text-center mt-3">
+    <%= link_to 'Yeni Fatura', new_invoice_path, class: 'btn btn-success me-2' %>
+    <%= link_to 'Ana Sayfa', root_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

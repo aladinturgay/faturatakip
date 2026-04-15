@@ -1,0 +1,156 @@
+/* Modern kart hover ve badge stilleri */
+.card {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: 0 6px 24px 0 rgba(60,72,100,0.18), 0 1.5px 6px 0 rgba(60,72,100,0.12);
+  transform: translateY(-2px) scale(1.03);
+}
+.badge.bg-success {
+  background: linear-gradient(90deg,#22c55e 60%,#16a34a 100%);
+  color: #fff;
+}
+.badge.bg-secondary {
+  background: linear-gradient(90deg,#64748b 60%,#334155 100%);
+  color: #fff;
+}
+.badge.bg-danger {
+  background: linear-gradient(90deg,#ef4444 60%,#b91c1c 100%);
+  color: #fff;
+}
+.badge.bg-primary {
+  background: linear-gradient(90deg,#2563eb 60%,#1e40af 100%);
+  color: #fff;
+}
+
+/* Tablo responsive ve zebra */
+.table-responsive {
+  overflow-x: auto;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f8fafc;
+}
+.table-bordered th, .table-bordered td {
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Modern butonlar */
+.btn-success {
+  background: linear-gradient(90deg,#22c55e 60%,#16a34a 100%);
+  border: none;
+}
+.btn-warning {
+  background: linear-gradient(90deg,#f59e42 60%,#ea580c 100%);
+  border: none;
+  color: #fff;
+}
+.btn-primary {
+  background: linear-gradient(90deg,#2563eb 60%,#1e40af 100%);
+  border: none;
+}
+.btn-secondary {
+  background: linear-gradient(90deg,#64748b 60%,#334155 100%);
+  border: none;
+}
+.btn:active, .btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(37,99,235,0.15);
+}
+
+/* Responsive kartlar */
+@media (max-width: 600px) {
+  .card {
+    min-width: 90vw !important;
+    max-width: 98vw !important;
+    padding: 1rem !important;
+  }
+}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: linear-gradient(135deg, #f4f6fa 60%, #e0e7ef 100%);
+  color: #222;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-top: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #2563eb22;
+}
+
+.btn:hover {
+  background: #1741a6;
+  box-shadow: 0 4px 16px #2563eb33;
+}
+
+table th, table td {
+  font-size: 15px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #2563eb;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.card {
+  border-radius: 14px !important;
+  box-shadow: 0 2px 16px #0001;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 6px 32px #2563eb22;
+  transform: translateY(-2px) scale(1.03);
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+nav ul li a:hover {
+  color: #2563eb;
+  background: #fff;
+}
+
+.badge {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e0e7ef;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 8px;
+}
