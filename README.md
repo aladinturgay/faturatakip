@@ -31,12 +31,20 @@ Fatura Takip Sistemi, küçük ve orta ölçekli işletmelerin abonelik, fatura 
 	```
 
 ## Giriş Bilgileri (Demo)
-- Yönetici:  
-  E-posta: admin@example.com  
-  Şifre: password
-- Kullanıcı:  
-  E-posta: ali@example.com  
-  Şifre: password
+
+Sistemde gerçek bir yönetici paneli veya yönetici rolü yoktur. Tüm kullanıcılar kendi abonelik ve faturalarını ekleyebilir, düzenleyebilir ve silebilir.
+
+Örnek kullanıcılar ve şifreleri:
+
+- E-posta: ali@example.com  
+	Şifre: password
+- E-posta: ayse@example.com  
+	Şifre: password
+- E-posta: mehmet@example.com  
+	Şifre: password
+
+Her kullanıcı kendi aboneliklerini ve faturalarını ekleyebilir, düzenleyebilir ve silebilir.
+"admin@example.com" sadece örnek olarak eklenmiştir, özel bir yetkisi yoktur.
 
 ## Kısa Notlar
 - Demo ortamında örnek abonelik ve fatura verileri otomatik olarak yüklenir.
