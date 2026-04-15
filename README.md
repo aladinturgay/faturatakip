@@ -1,6 +1,6 @@
-# Kurumsal Takip Sistemi
+# Fatura Takip Sistemi
 
-Kurumsal Takip Sistemi, küçük ve orta ölçekli işletmelerin abonelik, fatura ve kullanıcı yönetimini kolayca yapabilmesi için geliştirilmiş modern bir Ruby on Rails uygulamasıdır.
+Fatura Takip Sistemi, küçük ve orta ölçekli işletmelerin abonelik, fatura ve kullanıcı yönetimini kolayca yapabilmesi için geliştirilmiş modern bir Ruby on Rails uygulamasıdır.
 
 ## Özellikler
 - Kullanıcı, abonelik ve fatura yönetimi
@@ -12,8 +12,8 @@ Kurumsal Takip Sistemi, küçük ve orta ölçekli işletmelerin abonelik, fatur
 ## Kurulum
 1. Depoyu klonlayın:
 	```sh
-	git clone https://github.com/kullaniciadi/kurumsal-takip.git
-	cd kurumsal-takip
+	git clone https://github.com/kullaniciadi/faturatakip.git
+	cd faturatakip
 	```
 2. Bağımlılıkları yükleyin:
 	```sh
