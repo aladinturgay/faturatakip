@@ -28,9 +28,9 @@
       <tbody>
         <% @invoices.each do |inv| %>
           <tr>
-            <td><%= inv.subscription&.name %></td>
-            <td><%= inv.amount %> TL</td>
-            <td>
+            <td data-label="Abonelik"><%= inv.subscription&.name %></td>
+            <td data-label="Tutar"><%= inv.amount %> TL</td>
+            <td data-label="Durum">
               <% if inv.status == 'paid' %>
                 <span class="badge bg-success">Ödendi</span>
               <% elsif inv.status == 'unpaid' %>
@@ -39,10 +39,10 @@
                 <span class="badge bg-secondary">Bilinmiyor</span>
               <% end %>
             </td>
-            <td><%= inv.issued_at %></td>
-            <td><%= inv.due_at %></td>
-            <td><%= link_to raw('<i class="fas fa-eye"></i> Detay'), invoice_path(inv), class: 'btn btn-sm btn-outline-primary' %></td>
-            <td>
+            <td data-label="Düzenlenme"><%= inv.issued_at %></td>
+            <td data-label="Son Ödeme"><%= inv.due_at %></td>
+            <td data-label="Detay"><%= link_to raw('<i class="fas fa-eye"></i> Detay'), invoice_path(inv), class: 'btn btn-sm btn-outline-primary' %></td>
+            <td data-label="Sil">
               <%= button_to 'Sil', invoice_path(inv), method: :delete, data: { confirm: 'Faturayı silmek istediğinize emin misiniz?' }, class: 'btn btn-sm btn-outline-danger' %>
             </td>
           </tr>

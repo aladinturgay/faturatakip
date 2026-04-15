@@ -1,13 +1,16 @@
-    def upcoming
-      @upcoming_invoices = current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).order(:due_at)
-    end
+
+class InvoicesController < ApplicationController
+  before_action :authenticate_user!
+
+  def upcoming
+    @upcoming_invoices = current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).order(:due_at)
+  end
+
   def destroy
     @invoice = current_user.invoices.find(params[:id])
     @invoice.destroy
     redirect_to invoices_path, notice: 'Fatura silindi.'
   end
-class InvoicesController < ApplicationController
-  before_action :authenticate_user!
 
   def index
     @invoices = Invoice.where(user: current_user)

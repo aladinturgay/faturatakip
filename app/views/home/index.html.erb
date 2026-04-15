@@ -1,16 +1,6 @@
-    <% if user_signed_in? && current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).any? %>
-      <div class="card shadow-sm border-0 p-3 mb-4 mx-auto" style="background:#fff0f0; color:#b91c1c; border-radius:12px; min-width:320px; max-width:420px;">
-        <div class="fw-bold mb-2" style="font-size:16px;">Yaklaşan Faturalar</div>
-        <% current_user.invoices.where(status: 'unpaid').where('due_at >= ? AND due_at <= ?', Date.today, Date.today + 7.days).order(:due_at).each do |inv| %>
-          <div class="mb-1 small">
-            <b><%= inv.subscription&.name %></b> - <%= inv.amount %>₺ - Son Ödeme: <b><%= inv.due_at %></b>
-            <%= link_to 'Detay', invoice_path(inv), class: 'btn btn-xs btn-outline-danger ms-2' %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-<div class="d-flex" style="min-height: 100vh;">
-  <nav class="bg-dark text-white p-4" style="width: 220px; min-height: 100vh;">
+
+<div class="d-flex align-items-start flex-wrap flex-md-nowrap" style="min-height: 100vh;">
+  <nav class="bg-dark text-white p-4" style="width: 220px; min-width:180px; min-height: 100vh;" id="sideMenu">
     <div class="mb-4 text-center">
       <i class="fas fa-network-wired fa-2x mb-2"></i>
       <h4 style="font-weight:bold;">Takip Paneli</h4>
@@ -26,12 +16,12 @@
       <% end %>
     </ul>
   </nav>
-  <main class="flex-grow-1 p-4">
+  <main class="flex-grow-1 p-4" style="min-width:0;">
     <h1 class="mb-4 text-center" style="color:#1976d2;">Fatura Takip Sistemi</h1>
     <% if user_signed_in? %>
-      <div class="d-flex justify-content-center mb-4" style="gap: 18px;">
+      <div class="d-flex flex-wrap justify-content-center mb-4 gap-3 gap-md-4" style="width:100%;margin:0 auto;">
         <%= link_to subscriptions_path, style: 'text-decoration:none;' do %>
-          <div class="card shadow-sm border-0 text-center" style="background:#2563eb; color:#fff; border-radius:10px; width:110px; cursor:pointer;">
+          <div class="card shadow-sm border-0 text-center flex-fill" style="background:#2563eb; color:#fff; border-radius:10px; min-width:120px; max-width:220px; width:100%; cursor:pointer; margin-bottom:0;">
             <div class="card-body p-2">
               <i class="fas fa-layer-group fa-lg mb-1"></i>
               <h5 class="fw-bold mb-0"><%= current_user.subscriptions.count %></h5>
@@ -40,7 +30,7 @@
           </div>
         <% end %>
         <%= link_to invoices_path, style: 'text-decoration:none;' do %>
-          <div class="card shadow-sm border-0 text-center" style="background:#f59e42; color:#fff; border-radius:10px; width:110px; cursor:pointer;">
+          <div class="card shadow-sm border-0 text-center flex-fill" style="background:#f59e42; color:#fff; border-radius:10px; min-width:120px; max-width:220px; width:100%; cursor:pointer; margin-bottom:0;">
             <div class="card-body p-2">
               <i class="fas fa-file-invoice fa-lg mb-1"></i>
               <h5 class="fw-bold mb-0"><%= current_user.invoices.count %></h5>
@@ -52,11 +42,11 @@
         <div class="fw-bold mb-3 text-center" style="font-size:18px;">Hoş geldin, <%= current_user.email %>!</div>
         <div class="d-flex justify-content-center mb-5" style="gap: 56px;">
           <div class="card shadow-sm border-0 p-4 d-flex flex-column align-items-center" style="border-radius:14px; width:420px; min-width:260px;">
-            <h6 class="text-center mb-3">Faturalar (Yatay Grafik)</h6>
+            <h6 class="text-center mb-3">Faturalar</h6>
             <canvas id="invoicesBarH" width="360" height="220"></canvas>
           </div>
           <div class="card shadow-sm border-0 p-4 d-flex flex-column align-items-center" style="border-radius:14px; width:420px; min-width:260px;">
-            <h6 class="text-center mb-3">Abonelikler (Pasta Grafik)</h6>
+            <h6 class="text-center mb-3">Abonelikler</h6>
             <canvas id="subsPie" width="220" height="220"></canvas>
           </div>
         </div>
@@ -64,9 +54,7 @@
       <div class="alert alert-info text-center">Lütfen giriş yapınız. Kişisel abonelik ve fatura bilgilerinizi görmek için üye girişi gereklidir.</div>
     <% end %>
     <!-- Fatura Durumları (Bar) ve (Pasta) kaldırıldı -->
-    <% if user_signed_in? %>
-      <p class="mt-4 text-center">Hoş geldin, <%= current_user.email %>!</p>
-    <% else %>
+    <% unless user_signed_in? %>
       <div class="mt-4 text-center">
         <%= link_to 'Giriş Yap', new_user_session_path, class: 'btn btn-primary me-2' %>
         <%= link_to 'Kayıt Ol', new_user_registration_path, class: 'btn btn-success' %>
@@ -91,8 +79,8 @@
                 label: 'Fatura Sayısı',
                 data: [paidCount, unpaidCount],
                 backgroundColor: [
-                  'rgba(34,197,94,0.8)',
-                  'rgba(239,68,68,0.8)'
+                  'rgba(34,197,94,1)',
+                  'rgba(239,68,68,1)'
                 ],
                 borderRadius: 8
               }]
@@ -122,8 +110,8 @@
               datasets: [{
                 data: [activeCount, inactiveCount],
                 backgroundColor: [
-                  'rgba(34,197,94,0.8)',
-                  'rgba(100,116,139,0.8)'
+                  'rgba(34,197,94,1)',
+                  'rgba(100,116,139,1)'
                 ],
                 borderWidth: 1
               }]
