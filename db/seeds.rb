@@ -1,34 +1,61 @@
-admin = User.create!(email: 'admin@example.com', password: 'password', role: 'admin')
-customer1 = User.create!(email: 'ali@example.com', password: 'password', role: 'customer')
-customer2 = User.create!(email: 'ayse@example.com', password: 'password', role: 'customer')
-customer3 = User.create!(email: 'mehmet@example.com', password: 'password', role: 'customer')
-customer4 = User.create!(email: 'zeynep@example.com', password: 'password', role: 'customer')
-admin = User.create!(email: 'admin@example.com', password: 'password', role: 'admin')
-customer1 = User.create!(email: 'ali@example.com', password: 'password', role: 'customer')
-customer2 = User.create!(email: 'ayse@example.com', password: 'password', role: 'customer')
-customer3 = User.create!(email: 'mehmet@example.com', password: 'password', role: 'customer')
-customer4 = User.create!(email: 'zeynep@example.com', password: 'password', role: 'customer')
 
-subs = []
-subs << Subscription.create!(user: customer1, name: 'Süper Paket', status: 'active', start_date: Date.today - 30, end_date: Date.today + 335)
-subs << Subscription.create!(user: customer1, name: 'Ekstra Paket', status: 'inactive', start_date: Date.today - 400, end_date: Date.today - 35)
-subs << Subscription.create!(user: customer2, name: 'Genç Paket', status: 'active', start_date: Date.today - 10, end_date: Date.today + 355)
-subs << Subscription.create!(user: customer3, name: 'Aile Paketi', status: 'active', start_date: Date.today - 60, end_date: Date.today + 305)
-subs << Subscription.create!(user: customer4, name: 'Kurumsal Paket', status: 'active', start_date: Date.today - 90, end_date: Date.today + 275)
-subs = []
-subs << Subscription.create!(user: customer1, name: 'Süper Paket', status: 'active', start_date: Date.today - 30, end_date: Date.today + 335)
-subs << Subscription.create!(user: customer1, name: 'Ekstra Paket', status: 'inactive', start_date: Date.today - 400, end_date: Date.today - 35)
-subs << Subscription.create!(user: customer2, name: 'Genç Paket', status: 'active', start_date: Date.today - 10, end_date: Date.today + 355)
-subs << Subscription.create!(user: customer3, name: 'Aile Paketi', status: 'active', start_date: Date.today - 60, end_date: Date.today + 305)
-subs << Subscription.create!(user: customer4, name: 'Kurumsal Paket', status: 'active', start_date: Date.today - 90, end_date: Date.today + 275)
-
-subs.each_with_index do |sub, i|
-  3.times do |j|
-    Invoice.create!(user: sub.user, subscription: sub, amount: rand(80..250), status: j.even? ? 'paid' : 'unpaid', issued_at: Date.today - (j*30 + i*10), due_at: Date.today - (j*30 + i*10) + 10)
-  end
+# Kullanıcıları idempotent şekilde oluştur
+admin = User.find_or_create_by!(email: 'admin@example.com') do |u|
+  u.password = 'password'
+  u.role = 'admin'
 end
+customer1 = User.find_or_create_by!(email: 'ali@example.com') do |u|
+  u.password = 'password'
+  u.role = 'customer'
+end
+customer2 = User.find_or_create_by!(email: 'ayse@example.com') do |u|
+  u.password = 'password'
+  u.role = 'customer'
+end
+customer3 = User.find_or_create_by!(email: 'mehmet@example.com') do |u|
+  u.password = 'password'
+  u.role = 'customer'
+end
+customer4 = User.find_or_create_by!(email: 'zeynep@example.com') do |u|
+  u.password = 'password'
+  u.role = 'customer'
+end
+
+# Abonelikleri idempotent şekilde oluştur
+subs = []
+subs << Subscription.find_or_create_by!(user: customer1, name: 'Süper Paket') do |s|
+  s.status = 'active'
+  s.start_date = Date.today - 30
+  s.end_date = Date.today + 335
+end
+subs << Subscription.find_or_create_by!(user: customer1, name: 'Ekstra Paket') do |s|
+  s.status = 'inactive'
+  s.start_date = Date.today - 400
+  s.end_date = Date.today - 35
+end
+subs << Subscription.find_or_create_by!(user: customer2, name: 'Genç Paket') do |s|
+  s.status = 'active'
+  s.start_date = Date.today - 10
+  s.end_date = Date.today + 355
+end
+subs << Subscription.find_or_create_by!(user: customer3, name: 'Aile Paketi') do |s|
+  s.status = 'active'
+  s.start_date = Date.today - 60
+  s.end_date = Date.today + 305
+end
+subs << Subscription.find_or_create_by!(user: customer4, name: 'Kurumsal Paket') do |s|
+  s.status = 'active'
+  s.start_date = Date.today - 90
+  s.end_date = Date.today + 275
+end
+
+# Faturaları sadece yoksa oluştur
 subs.each_with_index do |sub, i|
   3.times do |j|
-    Invoice.create!(user: sub.user, subscription: sub, amount: rand(80..250), status: j.even? ? 'paid' : 'unpaid', issued_at: Date.today - (j*30 + i*10), due_at: Date.today - (j*30 + i*10) + 10)
+    issued = Date.today - (j*30 + i*10)
+    due = issued + 10
+    unless Invoice.exists?(user: sub.user, subscription: sub, issued_at: issued)
+      Invoice.create!(user: sub.user, subscription: sub, amount: rand(80..250), status: j.even? ? 'paid' : 'unpaid', issued_at: issued, due_at: due)
+    end
   end
 end
