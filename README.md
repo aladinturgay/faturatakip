@@ -43,9 +43,6 @@ Sistemde gerçek bir yönetici paneli veya yönetici rolü yoktur. Tüm kullanı
 - E-posta: mehmet@example.com  
 	Şifre: password
 
-Her kullanıcı kendi aboneliklerini ve faturalarını ekleyebilir, düzenleyebilir ve silebilir.
-"admin@example.com" sadece örnek olarak eklenmiştir, özel bir yetkisi yoktur.
-
 ## Kısa Notlar
 - Demo ortamında örnek abonelik ve fatura verileri otomatik olarak yüklenir.
 - Uygulama, Rails 8 ve PostgreSQL ile geliştirilmiştir.
